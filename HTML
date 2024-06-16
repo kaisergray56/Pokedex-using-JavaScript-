@@ -1,0 +1,123 @@
+
+Solution for Build a Pokémon Search App
+Close
+×
+HTML
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="styles.css" />
+		<title>Pokemon Search</title>
+	</head>
+
+	<body>
+		<h1>Pokemon Search</h1>
+		<div id="search-bar">
+			<input type="text" id="search-input" placeholder="Search for a Pokemon" required />
+			<button id="search-button">Search</button>
+		</div>
+		<img src="" alt="pokemon-image" id="sprite" />
+		<div id="pokemon-container">
+			<div class="pokemon-stats">
+				<p>NAME</p>
+				<p id="pokemon-name" class="unique-data"></p>
+			</div>
+			<div class="pokemon-stats">
+				<p>ID</p>
+				<p id="pokemon-id" class="unique-data"></p>
+			</div>
+			<div class="pokemon-stats">
+				<p>WEIGHT</p>
+				<p id="weight" class="unique-data"></p>
+			</div>
+			<div class="pokemon-stats">
+				<p>HEIGHT</p>
+				<p id="height" class="unique-data"></p>
+			</div>
+			<div class="pokemon-stats">
+				<p>TYPES</p>
+				<div id="types" class="unique-data"></div>
+			</div>
+			<div class="pokemon-stats">
+				<p>HP</p>
+				<p id="hp" class="unique-data"></p>
+			</div>
+			<div class="pokemon-stats">
+				<p>ATK</p>
+				<p id="attack" class="unique-data"></p>
+			</div>
+			<div class="pokemon-stats">
+				<p>DEF</p>
+				<p id="defense" class="unique-data"></p>
+			</div>
+			<div class="pokemon-stats">
+				<p>SP-ATK</p>
+				<p id="special-attack" class="unique-data"></p>
+			</div>
+			<div class="pokemon-stats">
+				<p>SP-DEF</p>
+				<p id="special-defense" class="unique-data"></p>
+			</div>
+			<div class="pokemon-stats">
+				<p>SPEED</p>
+				<p id="speed" class="unique-data"></p>
+			</div>
+		</div>
+		<script src="script.js"></script>
+	</body>
+</html>
+CSS
+JS
+async function fetchPokemon(pokemon) {
+	try {
+		const response = await fetch(
+			`https://pokeapi-proxy.freecodecamp.rocks/api/pokemon/${pokemon}`
+		);
+		const data = await response.json();
+		const typesDiv = document.getElementById("types");
+		console.log(data);
+		const sprite = data.sprites.front_default;
+		document.getElementById("sprite").src = sprite;
+		document.getElementById("sprite").style.display = "block";
+		document.getElementById("pokemon-name").textContent =
+			data.name.toUpperCase();
+		document.getElementById("pokemon-id").textContent = data.id;
+		document.getElementById("weight").textContent = data.weight;
+		document.getElementById("height").textContent = data.height;
+		if (data.types.length == 2) {
+			const type1 = document.createElement("p");
+			const type2 = document.createElement("p");
+			type1.textContent = data.types[0].type.name;
+			type2.textContent = data.types[1].type.name;
+			typesDiv.appendChild(type1);
+			typesDiv.appendChild(type2);
+		} else {
+			const type1 = document.createElement("p");
+			type1.textContent = data.types[0].type.name;
+			typesDiv.appendChild(type1);
+		}
+		document.getElementById("hp").textContent = data.stats[0].base_stat;
+		document.getElementById("attack").textContent = data.stats[1].base_stat;
+		document.getElementById("defense").textContent = data.stats[2].base_stat;
+		document.getElementById("special-attack").textContent =
+			data.stats[3].base_stat;
+		document.getElementById("special-defense").textContent =
+			data.stats[4].base_stat;
+		document.getElementById("speed").textContent = data.stats[5].base_stat;
+	} catch (error) {
+		console.log("Error fetching resource");
+		console.log(error);
+		alert("Pokémon not found");
+	}
+}
+
+const searchBtn = document.getElementById("search-button");
+const userInput = document.getElementById("search-input");
+searchBtn.onclick = () => {
+	fetchPokemon(userInput.value.toLowerCase());
+	userInput.value = "";
+	document.getElementById("types").innerHTML = "";
+};
+Close
